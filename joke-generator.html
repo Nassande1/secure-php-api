@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joke Generator</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #fdfbfb, #ebedee);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #joke {
+            margin: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        #counter {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Random Joke Generator</h1>
+    <div>
+        <button onclick="fetchJoke('Any')">Any</button>
+        <button onclick="fetchJoke('Programming')">Programming</button>
+        <button onclick="fetchJoke('Knock-Knock')">Knock-Knock</button>
+        <button onclick="fetchJoke('General')">General</button>
+    </div>
+    <div id="joke"></div>
+    <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    <div id="counter">Jokes fetched: <span id="jokeCount">0</span></div>
+
+    <script>
+        let jokeCount = 0;
+
+        async function fetchJoke(category) {
+            document.getElementById('joke').innerText = 'Loading...';
+            const response = await fetch(`https://v2.jokeapi.dev/joke/${category}`);
+            const data = await response.json();
+            const jokeText = data.type === 'single' ? data.joke : `${data.setup} - ${data.delivery}`;
+            document.getElementById('joke').innerText = jokeText;
+            jokeCount++;
+            document.getElementById('jokeCount').innerText = jokeCount;
+        }
+
+        function copyToClipboard() {
+            const jokeText = document.getElementById('joke').innerText;
+            navigator.clipboard.writeText(jokeText).then(() => {
+                alert('Joke copied to clipboard!');
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
